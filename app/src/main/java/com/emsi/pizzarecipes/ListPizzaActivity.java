@@ -1,5 +1,10 @@
 package com.emsi.pizzarecipes;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,26 +16,15 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
-
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.emsi.pizzarecipes.adapter.ProduitAdapter;
 import com.emsi.pizzarecipes.beans.Produit;
 import com.emsi.pizzarecipes.service.ProduitService;
 
-public class ListPizzaActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
-
+public class ListPizzaActivity extends AppCompatActivity implements AdapterView.OnItemClickListener{
     private ListView liste;
     private ProduitService ps = ProduitService.getInstance();
     private ProduitService fs = ProduitService.getInstance();
-
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +32,7 @@ public class ListPizzaActivity extends AppCompatActivity implements AdapterView.
         setContentView(R.layout.activity_list_pizza);
         liste  =  findViewById(R.id.liste);
         Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Pizza Recipes");
 
         ps.create(new Produit("BARBECUED CHICKEN PIZZA", 3, R.mipmap.pizza1, "35 min", "- 2 boneless skinless chicken breast halves (6 ounces each)\n- 1/4 teaspoon pepper\n- 1 cup barbecue sauce, divided\n- 1 tube (13.8 ounces) refrigerated pizza crust\n- 2 teaspoons olive oil\n-2 cups shredded Gouda cheese\n-1 small red onion, halved and thinly sliced\n-1/4 cup minced fresh cilantro","So fast and so easy with refrigerated pizza crust, these saucy, smoky pizzas make quick fans with their hot-off-the-grill, rustic flavor. They're perfect for spur-of-the-moment cookouts and summer dinners on the patio. —Alicia Trevithick, Temecula, California","STEP 1:\n\n  Sprinkle chicken with pepper; place on an oiled grill rack over medium heat. Grill, covered, until a thermometer reads 165°, 5-7 minutes per side, basting frequently with 1/2 cup barbecue sauce during the last 4 minutes. Cool slightly. Cut into cubes.\n\nSTEP 2:\n\n  Divide dough in half. On a well-greased large sheet of heavy-duty foil, press each portion of dough into a 10x8-in. rectangle; brush lightly with oil. Invert dough onto grill rack; peel off foil. Grill, covered, over medium heat until bottom is lightly browned, 1-2 minutes.\n\nSTEP 3:\n\n  Remove from grill. Spread grilled sides with remaining barbecue sauce. Top with cheese, chicken and onion. Grill, covered, until bottom is lightly browned and cheese is melted, 2-3 minutes. Sprinkle with cilantro. Yield: 2 pizzas (4 pieces each)."));
@@ -95,16 +89,16 @@ public class ListPizzaActivity extends AppCompatActivity implements AdapterView.
         TextView nom = view.findViewById(R.id.nom);
         Toast.makeText(this, idf.getText().toString()  + " " + nom.getText().toString(), Toast.LENGTH_SHORT  ).show();
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("Veuillez choisir une option :");
+        alertDialogBuilder.setMessage("Please choose an option :");
 
-        alertDialogBuilder.setPositiveButton("Supprimer", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 fs.delete(fs.findById(Integer.parseInt(idf.getText().toString())));
                 liste.setAdapter(new ProduitAdapter(ListPizzaActivity.this, fs.findAll()));
             }
         });
-        alertDialogBuilder.setNegativeButton("Détails", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setNegativeButton("Details", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(ListPizzaActivity.this,DetailsPizzaActivity.class);
@@ -125,7 +119,6 @@ public class ListPizzaActivity extends AppCompatActivity implements AdapterView.
         MenuItem shareItem = menu.add(0, 1, 0, "Share");
         shareItem.setIcon(ContextCompat.getDrawable(this, R.mipmap.share));
         shareItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
         shareItem.setOnMenuItemClickListener(item -> {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
